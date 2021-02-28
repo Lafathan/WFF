@@ -270,30 +270,6 @@ class WFF(object):
 # Main #
 # =============================================================================#
 if __name__ == '__main__':
-    # w1 = WFF('p+q')
-    # w2 = WFF('(p+q)>r')
-    # w3 = WFF('~q&r')
-
-    w1 = WFF('p>q')
-    w2 = WFF('r>s')
-    w3 = WFF('~q+~s')
-
-    # w1 = WFF('p>q')
-    # w2 = WFF('p>~q')
-
-    # w1 = WFF('p')
-    # w2 = WFF('p>q')
-
-    a = derivative([w1, w2, w3])
-    print(a)
-    for line in a.truth_table:
-        print(line)
-
-    a = WFF('({})'.format(')&('.join([w1.statement, w2.statement, w3.statement])))
-    print(a.format())
-
-    print(a.infer(WFF('~p+~r')))
-
-    print(a.truth_table)
+    pass
 
 # =============================================================================#
