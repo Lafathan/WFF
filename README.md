@@ -3,7 +3,7 @@ Scripts for working with First Order Logic Well Formed Formulas
 
 ## Usage
 
-'''python
+```python
 
 import WFF
 
@@ -24,4 +24,4 @@ w.is_contradiction() # returns False
 w.density() # returns 0.625
 WFF('a').infer(w) # return True
 
-'''
+```
