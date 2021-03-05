@@ -16,13 +16,13 @@ w.truth_table # returns a table with all possible inputs and their evaluated val
 w.statement # returns the logical statement
 
 # Format
-w.format(form = 'DNF').statement # '(a)+(~b&c)'
-w.format(form = 'CNF').statement # '(a+~b)&(a+c)'
+w.format(form = 'DNF') # '(a)+(~b&c)'
+w.format(form = 'CNF') # '(a+~b)&(a+c)'
 
 # Test
 w.is_tautology() # returns False
 w.is_contradiction() # returns False
 w.density() # returns 0.625
-WFF('a').infer(w) # return True
+WFF('a').infer(w) # returns True
 
 ```

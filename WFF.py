@@ -229,7 +229,7 @@ class WFF(object):
                         return False
         return True
 
-    def format(self, form='DNF') -> typing.ClassVar:
+    def format(self, form='DNF') -> str:
         """
         Returns the WFF reformatted to the desired form
         """
@@ -261,7 +261,7 @@ class WFF(object):
         # combine the individual terms into a full statement
         statement = '(' + SYMB_D[form][1].join(statement_terms) + ')'
 
-        return WFF(statement)
+        return statement
 
 
 # =============================================================================#
