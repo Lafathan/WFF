@@ -13,6 +13,7 @@ w = WFF.WFF('(a+b)&(a+~b)+~b&c')
 w(a = True, b = False, c = False) # returns True
 w(a = False, b = True, c = False) # returns False
 w.truth_table # returns a table with all possible inputs and their evaluated values
+w.statement # returns the logical statement
 
 # Format
 w.format(form = 'DNF').statement # '(a)+(~b&c)'
