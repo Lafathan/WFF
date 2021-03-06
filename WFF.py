@@ -141,7 +141,7 @@ class WFF(object):
             self.statement = data
         elif type(data) is list:
             self._truth_table = data
-            self.statement = self.format().statement
+            self.statement = WFF(self.format()).statement
 
     def __setattr__(self, name: str, value: typing.Any) -> None:
         """
