@@ -32,13 +32,12 @@ def derivative(arguments):
 
     return WFF(truth_table)
 
-
-def reduce(term, elements):
-    for elem in elements:
-        del term[elem]
-
-
 def simplify(terms: list) -> list:
+
+    def reduce(term, elements):
+        for elem in elements:
+            del term[elem]
+
     new_terms = []
 
     # loop until no more simplifications are possible
