@@ -12,7 +12,13 @@ w = WFF.WFF('(a+b)&(a+~b)+~b&c')
 # Evaluate
 w(a = True, b = False, c = False) # returns True
 w(a = False, b = True, c = False) # returns False
+w(a = False, c = True) # returns the following truth table
+
+# [({'b': True }, False),
+#  ({'b': False}, True )]
+
 w.truth_table # returns a table with all possible inputs and their evaluated values
+w() # returns the same as above
 w.statement # returns the logical statement
 
 # Format
