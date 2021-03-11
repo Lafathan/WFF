@@ -29,6 +29,14 @@ w.format(form = 'CNF') # '(a+~b)&(a+c)'
 w.is_tautology() # returns False
 w.is_contradiction() # returns False
 w.density() # returns 0.625
-WFF('a').infer(w) # returns True
+
+# hypothesis 1: if a then b
+h1 = WFF('a>b')
+# hypothesis 2: a
+h2 = WFF('a')
+# conclusion: b
+c = WFF('b')
+# valid?
+derivative([h1, h2]).infer(c) # return True
 
 ```
