@@ -85,7 +85,7 @@ def simplify(terms: list) -> list:
                 if lu > 1:
                     break
 
-                if len(keys) == lc:
+                elif len(keys) == lc:
                     # Equality: a + a ==> a + {}
                     term1.clear()
                     break
@@ -221,8 +221,8 @@ class WFF(object):
         This is done by testing whether the WFF truth table is
         a subset of self.truth_table
         """
-        for key1, value1 in wff.truth_table:
-            for key2, value2 in self.truth_table:
+        for key1, value1 in self.truth_table:
+            for key2, value2 in wff.truth_table:
                 if key1.items() <= key2.items():
                     if value1 != value2:
                         return False
@@ -261,14 +261,5 @@ class WFF(object):
         statement = '(' + SYMB_D[form][1].join(statement_terms) + ')'
 
         return statement
-
-
-# =============================================================================#
-
-
-# Main #
-# =============================================================================#
-if __name__ == '__main__':
-    pass
 
 # =============================================================================#
