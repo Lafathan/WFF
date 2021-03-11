@@ -31,11 +31,11 @@ w.is_contradiction() # returns False
 w.density() # returns 0.625
 
 # hypothesis 1: if a then b
-h1 = WFF('a>b')
+h1 = WFF.WFF('a>b')
 # hypothesis 2: a
-h2 = WFF('a')
+h2 = WFF.WFF('a')
 # conclusion: b
-c = WFF('b')
+c = WFF.WFF('b')
 # valid?
 WFF.derivative([h1, h2]).infer(c) # return True
 
