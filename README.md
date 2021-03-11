@@ -37,6 +37,6 @@ h2 = WFF('a')
 # conclusion: b
 c = WFF('b')
 # valid?
-derivative([h1, h2]).infer(c) # return True
+WFF.derivative([h1, h2]).infer(c) # return True
 
 ```
