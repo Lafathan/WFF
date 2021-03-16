@@ -21,17 +21,9 @@ import Logic
 # =============================================================================#
 
 def derivative(arguments):
-    atoms = []
-    for arg in arguments:
-        atoms.extend([atom for atom in arg.atoms if atom not in atoms])
-
-    truth_table = []
-    for vals in itertools.product(Logic.BIN_VALS.values(), repeat=len(atoms)):
-        p_vals = {k: v for (k, v) in zip(atoms, vals)}
-        truth_table.append((p_vals, all([arg(**p_vals) for arg in arguments])))
-
-    return WFF(truth_table)
-
+    
+    return WFF('({})'.format(')&('.join([str(arg) for arg in arguments])))
+    
 def simplify(terms: list) -> list:
 
     def reduce(term, elements):
@@ -121,7 +113,6 @@ def simplify(terms: list) -> list:
 
     return terms
 
-
 # =============================================================================#
 
 
@@ -204,29 +195,28 @@ class WFF(object):
         return self._truth_table
 
     def is_tautology(self) -> bool:
-        # return whether or not the statement is a tautology
+        """
+        Return whether or not the statement is a tautology
+        """
         return all((_[1] for _ in self.truth_table))
 
     def is_contradiction(self) -> bool:
-        # return whether or not the statement is a contradiction
+        """
+        Return whether or not the statement is a contradiction
+        """
         return all((not _[1] for _ in self.truth_table))
 
     def density(self) -> float:
-        # return the percentage of True possible evaluations
+        """
+        Return the percentage of True possible evaluations
+        """
         return sum([1 for _ in self.truth_table if _[1]]) / len(self.truth_table)
 
     def infer(self, wff) -> bool:
         """
         Returns whether or not the argument WFF can be inferred
-        This is done by testing whether the WFF truth table is
-        a subset of self.truth_table
         """
-        for key1, value1 in self.truth_table:
-            for key2, value2 in wff.truth_table:
-                if key1.items() <= key2.items():
-                    if value1 != value2:
-                        return False
-        return True
+        return WFF('({})>({})'.format(self, wff)).is_tautology()
 
     def format(self, form='DNF') -> str:
         """
