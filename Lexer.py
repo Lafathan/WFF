@@ -131,12 +131,16 @@ class Parser:
             self.next_token()
             _expression = self.expr()
             self.next_token()
-            # return the expression as a whole
-            return _expression
+            # if the parenthesis is properly closed
+            if self.current_token[1] == 'RP':
+                self.next_token()
+                # return the expression as a whole
+                return _expression
+            raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the parenthesis is a closure
         elif tok[1] == 'RP':
-            # ignore it and move on
-            self.next_token()
+            # There should be no free floating right parenthesis
+            raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the factor is a negation
         elif tok[1] == 'Negation':
             # increment the token
