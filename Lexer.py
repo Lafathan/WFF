@@ -138,10 +138,10 @@ class Parser:
                 self.next_token()
                 # return the expression as a whole
                 return _expression
-            else:
-                raise SyntaxError('Parenthesis error at {}'.format(self.index))
+            raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the parenthesis is a closure
         elif tok[1] == 'RP':
+            # There should be no free floating right parenthesis
             raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the factor is a negation
         elif tok[1] == 'Negation':
