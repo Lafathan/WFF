@@ -24,6 +24,7 @@ def derivative(arguments):
     
     return WFF('({})'.format(')&('.join([str(arg) for arg in arguments])))
     
+
 def simplify(terms: list) -> list:
 
     def reduce(term, elements):
@@ -220,13 +221,12 @@ class WFF(object):
 
     def format(self, form='DNF') -> str:
         """
-        Returns the WFF reformatted to the desired form
+        Returns the WFF string reformatted to the desired form
         """
         # CNF (conjunctive normal form) (a+b)&(c+d)
         # DNF (disjunctive normal form) (a&b)+(c&d)
 
         FORM_D = {'DNF': True, 'CNF': False}
-        SWAP_D = {True: False, False: True}
         SYMB_D = {'DNF': ('&', ')+('), 'CNF': ('+', ')&(')}
 
         terms = []
@@ -236,7 +236,7 @@ class WFF(object):
 
                 # copy the dictionary to the terms and swap the value if CNF
                 if form == 'CNF':
-                    terms.append({k: SWAP_D[v] for k, v in row[0].items()})
+                    terms.append({k: not v for k, v in row[0].items()})
                 else:
                     terms.append({k: v for k, v in row[0].items()})
 
