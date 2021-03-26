@@ -2,7 +2,6 @@
 # =============================================================================#
 
 import typing
-import copy
 import itertools
 
 import Lexer
@@ -36,7 +35,7 @@ def simplify(terms: list) -> list:
     # loop until no more simplifications are possible
     while terms != new_terms:
 
-        new_terms = copy.deepcopy(terms)
+        new_terms = terms[:]
 
         # loop through term combinations looking for simplifications
         for i, term1 in enumerate(terms):
@@ -90,7 +89,6 @@ def simplify(terms: list) -> list:
                         # Cancellation: a + ~a ==> {} + {}
                         term1.clear()
                     term2.clear()
-                    break
                 elif lc > 0 and lu == 0 and lb > 0:
                     # Absorption: abc + ab ==> ab + {}
                     if all(x in term1 for x in unbalanced_factors):
@@ -99,7 +97,6 @@ def simplify(terms: list) -> list:
                     elif all(x in term2 for x in unbalanced_factors):
                         reduce(term2, unbalanced_factors)
                         term1.clear()
-                    break
                 elif lu == 1 and lb > 0:
                     # Reduction: ab + a~bc ==> ab + ac
                     if all(x in term1 for x in unbalanced_factors):
@@ -164,7 +161,7 @@ class WFF(object):
                     return_list.append(row)
             return return_list
 
-        var_vals = copy.deepcopy(vals)
+        var_vals = vals.copy()
 
         # Recursively evaluate the ast, substituting atoms with given values
         def ast_eval(node) -> bool:
