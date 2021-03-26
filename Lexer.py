@@ -24,7 +24,6 @@ FORMS = re.compile(r'''^
     (?P<Boolean>({})|({}))
     '''.format(*Logic.BIN_VALS.keys()), re.VERBOSE)
 
-
 # =======================================================================================#
 
 
@@ -51,13 +50,17 @@ def tokenize(statement):
             # if there is no match, raise an error
             error_string = 'Expected a token but found {}'.format(partial)
             raise SyntaxError(error_string)
+    # check for balanced parenthesis
+    lp = len([_ for _ in tokens if _[1] == 'LP'])
+    rp = len([_ for _ in tokens if _[1] == 'RP'])
+    if lp != rp:
+        raise SyntaxError('Unbalanced parenthesis error')
     return tokens
 
 
 def parse(statement):
     ast, atoms = Parser(statement).parse()
     return ast, atoms
-
 
 # =======================================================================================#
 
@@ -130,16 +133,15 @@ class Parser:
             # grab the expression in the parenthesis
             self.next_token()
             _expression = self.expr()
-            self.next_token()
             # if the parenthesis is properly closed
             if self.current_token[1] == 'RP':
                 self.next_token()
                 # return the expression as a whole
                 return _expression
-            raise SyntaxError('Parenthesis error at {}'.format(self.index))
+            else:
+                raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the parenthesis is a closure
         elif tok[1] == 'RP':
-            # There should be no free floating right parenthesis
             raise SyntaxError('Parenthesis error at {}'.format(self.index))
         # if the factor is a negation
         elif tok[1] == 'Negation':
