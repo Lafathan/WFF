@@ -19,37 +19,39 @@ import Logic
 # Functions #
 # =============================================================================#
 
-def derivative(arguments):
+def derivative(arguments: list) -> typing.ClassVar:
     
     return WFF('({})'.format(')&('.join([str(arg) for arg in arguments])))
     
 
-def simplify(terms: list) -> list:
+def simplify(new_terms: list) -> list:
 
     def reduce(term, elements):
         for elem in elements:
-            del term[elem]
-
-    new_terms = []
+            if elem in term:
+                del term[elem]
+                
+    terms = []
+    iter_count = 0
 
     # loop until no more simplifications are possible
-    while terms != new_terms:
-
-        new_terms = terms[:]
-
+    while new_terms != terms:
+        
+        terms = new_terms[:]
+        
         # loop through term combinations looking for simplifications
-        for i, term1 in enumerate(terms):
-
+        for i, term1 in enumerate(terms[:-1]):
+            
             # skip it if the term is empty
             if len(term1) == 0:
                 continue
-
+                
             for j, term2 in enumerate(terms[i + 1:]):
 
                 # skip it if the term is empty
                 if len(term2) == 0:
                     continue
-
+                
                 # get all possible atoms across both terms
                 keys = set().union(*term1, *term2)
 
@@ -75,41 +77,41 @@ def simplify(terms: list) -> list:
                 # move on if terms begin to deviate
                 # (2 uncommon factors or more is irreducible)
                 if lu > 1:
-                    break
-
+                    pass
                 elif len(keys) == lc:
                     # Equality: a + a ==> a + {}
-                    term1.clear()
-                    break
+                    new_terms[i+1+j].clear()
                 elif lu == 1 and lb == 0:
                     if lc > 0:
                         # Adjacency: abc + a~bc ==> ac + {}
-                        reduce(term1, uncommon_factors)
+                        reduce(new_terms[i], uncommon_factors)
                     else:
                         # Cancellation: a + ~a ==> {} + {}
-                        term1.clear()
-                    term2.clear()
+                        new_terms[i].clear()
+                    new_terms[i+1+j].clear()
                 elif lc > 0 and lu == 0 and lb > 0:
                     # Absorption: abc + ab ==> ab + {}
                     if all(x in term1 for x in unbalanced_factors):
-                        reduce(term1, unbalanced_factors)
-                        term2.clear()
+                        new_terms[i].clear()
                     elif all(x in term2 for x in unbalanced_factors):
-                        reduce(term2, unbalanced_factors)
-                        term1.clear()
+                        new_terms[i+1+j].clear()
                 elif lu == 1 and lb > 0:
                     # Reduction: ab + a~bc ==> ab + ac
                     if all(x in term1 for x in unbalanced_factors):
-                        reduce(term1, uncommon_factors)
-                        break
+                        reduce(new_terms[i], uncommon_factors)
                     elif all(x in term2 for x in unbalanced_factors):
-                        reduce(term2, uncommon_factors)
+                        reduce(new_terms[i+1+j], uncommon_factors)
 
         # remove the empty terms
-        while {} in terms:
-            terms.remove({})
+        while {} in new_terms:
+            new_terms.remove({})
+            
+        iter_count += 1
+        if iter_count > 10:
+            print('Failed to simplify. Exceeded iteration threshold.')
+            break
 
-    return terms
+    return new_terms
 
 # =============================================================================#
 
@@ -218,13 +220,13 @@ class WFF(object):
 
     def format(self, form='DNF') -> str:
         """
-        Returns the WFF string reformatted to the desired form
+        Returns the WFF reformatted to the desired form
         """
         # CNF (conjunctive normal form) (a+b)&(c+d)
         # DNF (disjunctive normal form) (a&b)+(c&d)
 
         FORM_D = {'DNF': True, 'CNF': False}
-        SYMB_D = {'DNF': ('&', ')+('), 'CNF': ('+', ')&(')}
+        SYMB_D = {'DNF': ('*', ')+('), 'CNF': ('+', ')*(')}
 
         terms = []
         # loop through the truth table grabbing atomic value combinations
