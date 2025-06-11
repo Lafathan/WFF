@@ -152,7 +152,7 @@ class WFF(object):
         Evaluates the truth value of the WFF for the given input values
         """
 
-        # remove useless variables form the input dictionary
+        # remove useless variables from the input dictionary
         vals = {k: v for k, v in vals.items() if k in self.atoms}
 
         # If not all atoms are contained in given values, return a sub-truth_table
