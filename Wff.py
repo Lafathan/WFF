@@ -208,7 +208,7 @@ class WFF(object):
 
     def density(self) -> float:
         """
-        Return the percentage of True possible evaluations
+        Return the fraction of possible evaluations that are True.
         """
         return sum([1 for _ in self.truth_table if _[1]]) / len(self.truth_table)
 
