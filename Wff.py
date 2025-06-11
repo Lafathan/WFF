@@ -156,7 +156,7 @@ class WFF(object):
         vals = {k: v for k, v in vals.items() if k in self.atoms}
 
         # If not all atoms are contained in given values, return a sub-truth_table
-        if [*vals] != self.atoms:
+        if set(vals.keys()) != set(self.atoms):
             return_list = []
             for row in self.truth_table:
                 if all([v == row[0][k] for k, v in vals.items()]):
