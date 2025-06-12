@@ -1,27 +1,27 @@
-import Logic
+from wff import logic
 
 
 def test_negation():
-    assert Logic.negation(True) is False
-    assert Logic.negation(False) is True
+    assert logic.negation(True) is False
+    assert logic.negation(False) is True
 
 
 def test_conjunction():
-    assert Logic.conjunction(True, True)
-    assert not Logic.conjunction(True, False)
+    assert logic.conjunction(True, True)
+    assert not logic.conjunction(True, False)
 
 
 def test_disjunction():
-    assert Logic.disjunction(False, True)
-    assert not Logic.disjunction(False, False)
+    assert logic.disjunction(False, True)
+    assert not logic.disjunction(False, False)
 
 
 def test_implication():
-    assert Logic.implication(True, False) is False
-    assert Logic.implication(True, True) is True
-    assert Logic.implication(False, True) is True
+    assert logic.implication(True, False) is False
+    assert logic.implication(True, True) is True
+    assert logic.implication(False, True) is True
 
 
 def test_biconditional():
-    assert Logic.biconditional(True, True) is True
-    assert Logic.biconditional(True, False) is False
+    assert logic.biconditional(True, True) is True
+    assert logic.biconditional(True, False) is False

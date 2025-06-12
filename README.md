@@ -5,9 +5,9 @@ Scripts for working with First Order Logic Well Formed Formulas
 
 ```python
 
-import Wff
+from wff import WFF, derivative
 
-w = Wff.WFF('(a+b)&(a+~b)+~b&c')
+w = WFF('(a+b)&(a+~b)+~b&c')
 
 # Evaluate
 w(a = True, b = False, c = False) # returns True
@@ -31,12 +31,12 @@ w.is_contradiction() # returns False
 w.density() # returns 0.625
 
 # hypothesis 1: if a then b
-h1 = Wff.WFF('a>b')
+h1 = WFF('a>b')
 # hypothesis 2: a
-h2 = Wff.WFF('a')
+h2 = WFF('a')
 # conclusion: b
-c = Wff.WFF('b')
+c = WFF('b')
 # valid?
-Wff.derivative([h1, h2]).infer(c) # returns True
+derivative([h1, h2]).infer(c) # returns True
 
 ```

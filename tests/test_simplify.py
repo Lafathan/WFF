@@ -1,4 +1,4 @@
-from Wff import simplify
+from wff import simplify
 
 
 def test_simplify_equality():

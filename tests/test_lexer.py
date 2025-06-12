@@ -1,37 +1,37 @@
 import pytest
-import Lexer
-import Logic
+from wff import lexer
+from wff import logic
 
 
 def test_tokenize_simple():
-    tokens = Lexer.tokenize('a*b')
+    tokens = lexer.tokenize('a*b')
     assert tokens == [('a', 'Predicate'), ('*', 'Conjunction'), ('b', 'Predicate')]
 
 
 def test_tokenize_unbalanced():
     with pytest.raises(SyntaxError):
-        Lexer.tokenize('(a+b')
+        lexer.tokenize('(a+b')
 
 
 def test_parse_conjunction():
-    ast, atoms = Lexer.parse('a*b')
+    ast, atoms = lexer.parse('a*b')
     assert atoms == ['a', 'b']
-    assert ast == (Logic.conjunction, ['a', 'b'])
+    assert ast == (logic.conjunction, ['a', 'b'])
 
 
 def test_parse_negation():
-    ast, atoms = Lexer.parse('~a')
+    ast, atoms = lexer.parse('~a')
     assert atoms == ['a']
-    assert ast == (Logic.negation, ['a'])
+    assert ast == (logic.negation, ['a'])
 
 
 def test_parse_complex():
-    ast, atoms = Lexer.parse('(a+b)&~c')
+    ast, atoms = lexer.parse('(a+b)&~c')
     expected = (
-        Logic.conjunction,
+        logic.conjunction,
         [
-            (Logic.disjunction, ['a', 'b']),
-            (Logic.negation, ['c'])
+            (logic.disjunction, ['a', 'b']),
+            (logic.negation, ['c'])
         ]
     )
     assert atoms == ['a', 'b', 'c']
