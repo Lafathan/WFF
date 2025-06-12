@@ -4,8 +4,8 @@
 import typing
 import itertools
 
-import Lexer
-import Logic
+from . import lexer as Lexer
+from . import logic as Logic
 
 # =============================================================================#
 

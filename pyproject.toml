@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wff"
+version = "0.1.0"
+description = "Tools for working with First Order Logic Well Formed Formulas"
+authors = [{ name = "Unknown", email = "" }]
+readme = "README.md"
+requires-python = ">=3.8"
