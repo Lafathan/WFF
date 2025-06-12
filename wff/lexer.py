@@ -10,19 +10,23 @@ from . import logic as Logic
 # Constants #
 # =======================================================================================#
 
-FORMS = re.compile(r'''^
+_BOOL_PATTERN = "|".join(map(re.escape, Logic.BIN_VALS.keys()))
+
+TOKEN_REGEX = r"""^
     (?P<Conjunction>[*&∧])|
     (?P<Disjunction>[+∨])|
     (?P<Implication>[→>])|
     (?P<Biconditional>[↔=])|
     (?P<Negation>[¬~])|
-    (?P<Quantifier>[∀Ǝ][a-z]+)|
+    (?P<Quantifier>[∀Ǝ][a-zA-Z_][a-zA-Z0-9_]*)|
     (?P<LP>\()|
     (?P<RP>\))|
-    (?P<Function>^[A-Z]\((,*\s*[a-z])*?\))|
-    (?P<Predicate>[a-z])|
-    (?P<Boolean>({})|({}))
-    '''.format(*Logic.BIN_VALS.keys()), re.VERBOSE)
+    (?P<Function>[A-Z][A-Za-z0-9_]*\([^()]*\))|
+    (?P<Predicate>[a-z][a-zA-Z0-9_]*)|
+    (?P<Boolean>({bools}))
+    """.format(bools=_BOOL_PATTERN)
+
+FORMS = re.compile(TOKEN_REGEX, re.VERBOSE)
 
 # =======================================================================================#
 
@@ -102,16 +106,25 @@ class Parser:
         self.atoms = []  # prepare to collect atoms
 
     def parse(self):
-        return self.expr(), self.atoms  # return the ast and the atoms
+        ast = self.expr()
+        if self.current_token is not None:
+            raise SyntaxError(
+                'Unexpected token {} at {}'.format(self.current_token[0], self.index)
+            )
+        return ast, self.atoms  # return the ast and the atoms
 
     def next_token(self):
         self.index += 1  # increment the current token index
         if self.index < len(self.tokens):
             self.current_token = self.tokens[self.index]
+        else:
+            self.current_token = None
 
     def atom(self):
         # grab the current token
         tok = self.current_token
+        if tok is None:
+            raise SyntaxError('Unexpected end of input')
         # check whether it is a predicate or function
         if tok[1] == 'Predicate' or tok[1] == 'Function':
             # if it is a new atom
@@ -128,6 +141,8 @@ class Parser:
     def fact(self):
         # grab the current token
         tok = self.current_token
+        if tok is None:
+            raise SyntaxError('Unexpected end of input')
         # check whether it is an open parenthesis
         if tok[1] == 'LP':
             # grab the expression in the parenthesis
@@ -156,12 +171,14 @@ class Parser:
     def term(self):
         # grab the current token
         tok = self.current_token
+        if tok is None:
+            raise SyntaxError('Unexpected end of input')
         # grab the left hand side of the term
         _term = self.fact()
         # grab the new current token
         tok = self.current_token
         # check the operator between the left and right hand side
-        if tok[1] in self.TERM_DICT.keys():
+        if tok is not None and tok[1] in self.TERM_DICT.keys():
             # increment the token
             self.next_token()
             # return the operator and the left and right hand sides of the term
@@ -172,9 +189,11 @@ class Parser:
     def expr(self):
         # code follows same logic as the term() function
         tok = self.current_token
+        if tok is None:
+            raise SyntaxError('Unexpected end of input')
         _expr = self.term()
         tok = self.current_token
-        if tok[1] in self.EXPR_DICT.keys():
+        if tok is not None and tok[1] in self.EXPR_DICT.keys():
             self.next_token()
             return self.EXPR_DICT[tok[1]], [_expr, self.expr()]
         else:
