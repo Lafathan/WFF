@@ -8,6 +8,15 @@ def test_tokenize_simple():
     assert tokens == [('a', 'Predicate'), ('*', 'Conjunction'), ('b', 'Predicate')]
 
 
+def test_tokenize_multichar_predicate_and_function():
+    tokens = lexer.tokenize('foo*Bar(x,y)')
+    assert tokens == [
+        ('foo', 'Predicate'),
+        ('*', 'Conjunction'),
+        ('Bar(x,y)', 'Function'),
+    ]
+
+
 def test_tokenize_unbalanced():
     with pytest.raises(SyntaxError):
         lexer.tokenize('(a+b')
@@ -36,3 +45,13 @@ def test_parse_complex():
     )
     assert atoms == ['a', 'b', 'c']
     assert ast == expected
+
+
+def test_parse_unexpected_end():
+    with pytest.raises(SyntaxError):
+        lexer.parse('a*')
+
+
+def test_parse_extra_characters():
+    with pytest.raises(SyntaxError):
+        lexer.parse('(a*b)c')
