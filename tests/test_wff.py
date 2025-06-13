@@ -41,3 +41,16 @@ def test_format_cnf_dnf():
     w = WFF('(a+b)&(a+~b)+~b&c')
     assert w.format('DNF') == '(a)+(~b*c)'
     assert w.format('CNF') == '(a+~b)*(a+c)'
+
+
+def test_truth_table_str_and_circuit():
+    w = WFF('a*b')
+    table = w.truth_table_str()
+    lines = table.splitlines()
+    assert 'a' in lines[0] and 'b' in lines[0] and 'Result' in lines[0]
+    assert len(lines) == 6
+
+    diagram = w.circuit()
+    assert '∧' in diagram
+    assert 'a' in diagram
+    assert 'b' in diagram
