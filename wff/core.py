@@ -251,4 +251,55 @@ class WFF(object):
 
         return statement
 
+    def truth_table_str(self) -> str:
+        """Return a pretty formatted truth table."""
+        headers = self.atoms + ["Result"]
+        # determine column widths
+        widths = [max(len(h), 5) for h in headers]
+
+        def fmt_row(values: list) -> str:
+            return " | ".join(v.center(w) for v, w in zip(values, widths))
+
+        header = fmt_row(headers)
+        separator = "-+-".join("-" * w for w in widths)
+
+        rows = []
+        for vals, result in self.truth_table:
+            row_vals = ["T" if vals[a] else "F" for a in self.atoms]
+            row_vals.append("T" if result else "F")
+            rows.append(fmt_row(row_vals))
+
+        return "\n".join([header, separator] + rows)
+
+    SYMBOLS = {
+        Logic.conjunction: "∧",
+        Logic.disjunction: "∨",
+        Logic.negation: "¬",
+        Logic.implication: "→",
+        Logic.biconditional: "↔",
+    }
+
+    def circuit(self) -> str:
+        """Return an ASCII representation of the WFF as a circuit tree."""
+
+        def _diagram(node, prefix="", is_tail=True):
+            if isinstance(node, tuple):
+                symbol = self.SYMBOLS.get(node[0], str(node[0]))
+                lines = [prefix + ("└── " if is_tail else "├── ") + symbol]
+                new_prefix = prefix + ("    " if is_tail else "│   ")
+                for i, child in enumerate(node[1]):
+                    lines += _diagram(child, new_prefix, i == len(node[1]) - 1)
+                return lines
+            else:
+                return [prefix + ("└── " if is_tail else "├── ") + str(node)]
+
+        if isinstance(self.ast, tuple):
+            root_sym = self.SYMBOLS.get(self.ast[0], str(self.ast[0]))
+            lines = [root_sym]
+            for i, child in enumerate(self.ast[1]):
+                lines += _diagram(child, "", i == len(self.ast[1]) - 1)
+            return "\n".join(lines)
+        else:
+            return str(self.ast)
+
 # =============================================================================#
