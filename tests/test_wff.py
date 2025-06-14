@@ -25,9 +25,10 @@ def test_truth_table_and_density():
     assert w.density() == 0.25
 
 
-def test_tautology_and_contradiction():
+def test_tautology_and_contradiction_and_satisfiable():
     assert WFF('a+~a').is_tautology()
     assert WFF('a*~a').is_contradiction()
+    assert not WFF('a*~a').is_satisfiable()
 
 
 def test_derivative_infer():
@@ -43,14 +44,14 @@ def test_format_cnf_dnf():
     assert w.format('CNF') == '(a+~b)*(a+c)'
 
 
-def test_truth_table_str_and_circuit():
+def test_truth_table_str_and_draw():
     w = WFF('a*b')
     table = w.truth_table_str()
     lines = table.splitlines()
     assert 'a' in lines[0] and 'b' in lines[0] and 'Result' in lines[0]
     assert len(lines) == 6
 
-    diagram = w.circuit()
+    diagram = w.draw()
     assert '∧' in diagram
     assert 'a' in diagram
     assert 'b' in diagram
