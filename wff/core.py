@@ -206,6 +206,12 @@ class WFF(object):
         """
         return all((not _[1] for _ in self.truth_table))
 
+    def is_satisfiable(self) -> bool:
+        """
+        Return whether or not the statement is satisfiable
+        """
+        return not self.is_contradiction()
+
     def density(self) -> float:
         """
         Return the fraction of possible evaluations that are True.
@@ -279,7 +285,7 @@ class WFF(object):
         Logic.biconditional: "↔",
     }
 
-    def circuit(self) -> str:
+    def draw(self) -> str:
         """Return an ASCII representation of the WFF as a circuit tree."""
 
         def _diagram(node, prefix="", is_tail=True):
