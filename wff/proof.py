@@ -58,6 +58,13 @@ class ProofStep:
         self.rule = rule        # textual rule applied
         self.refs = refs        # references to earlier lines
 
+    def __str__(self) -> str:
+        """Return a human readable representation of the step."""
+        refs = ", ".join(str(r) for r in self.refs) if self.refs else ""
+        return f"{self.formula} \t{self.rule} {refs}".rstrip()
+
+    __repr__ = __str__
+
 
 class Proof:
     """Simple forward-chaining proof generator.
@@ -77,6 +84,7 @@ class Proof:
         self._queue_low = deque()
         self.search_limit = search_limit
         self._target_atoms = set(self.conclusion.atoms)
+        self.contradiction_mode = False
 
     def _add_step(self, wff: WFF, rule: str, refs: typing.List[int]) -> int:
         """Register a new proof line if it hasn't been seen before."""
@@ -93,6 +101,14 @@ class Proof:
                 self._queue_high.append(step)
             else:
                 self._queue_low.append(step)
+            if self.contradiction_mode and rule != "Reductio ad Absurdum":
+                if is_op(step.formula.ast, Logic.negation):
+                    comp_ast = step.formula.ast[1][0]
+                else:
+                    comp_ast = negate_ast(step.formula.ast)
+                other = self._known.get(ast_to_str(comp_ast))
+                if other:
+                    self._add_step(self.conclusion, "Reductio ad Absurdum", [other, idx])
             return idx
         return self._known[key]
 
@@ -250,8 +266,10 @@ class Proof:
     def derive(self) -> typing.List[ProofStep]:
         self.steps = []
         self._known = {}
+        self._op_index = defaultdict(list)
         self._queue_high = deque()
         self._queue_low = deque()
+        self.contradiction_mode = False
 
         for prem in self.premises:
             self._add_step(prem, "Assumption", [])
@@ -262,6 +280,7 @@ class Proof:
             return self.steps[:idx]
 
         neg_concl = WFF(f"~({self.conclusion})")
+        self.contradiction_mode = True
         self._add_step(neg_concl, "Assumption", [])
         self._search()
         if str(self.conclusion) in self._known:
